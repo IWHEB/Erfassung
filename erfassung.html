@@ -84,7 +84,7 @@
             document.getElementById('input-text').value = text;
             //console.log("text", text)
 
-            let lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 1);
+            let lines = text.split("\n").map(l => l.trim()).filter(l => l.length >= 1);
             //filter out seperators
             lines = lines.filter(l => {
                 if (l.split('').every(c => c == "_" || c == "-")) {
@@ -97,7 +97,7 @@
             let activeSection = null;
             for (let line of lines) {
                 let line_as_number = parseInt(line);
-                if (!isNaN(line)) {
+                if (!isNaN(line) && activeSection === null) {
                     document.getElementById('igelID').value = line_as_number;
                 } else {
                     let heading = extractHeading(line);

@@ -98,6 +98,10 @@
             for (let line of lines) {
                 let line_as_number = parseInt(line);
                 if (!isNaN(line) && activeSection === null) {
+                    if(line.startsWith("2025") || line.startsWith("2024")){
+                        line = line.substring(4);
+                        line_as_number = parseInt(line);
+                    }
                     document.getElementById('igelID').value = line_as_number;
                 } else {
                     let heading = extractHeading(line);

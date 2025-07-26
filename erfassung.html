@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        .label {
+            margin-right: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: flex; flex-direction: column;">
+        <div style="display: flex; flex-direction: row; justify-content: space-evenly; gap: 3em;">
+            <div style="display: flex; flex-direction: column;">
+                <h2>Copy-Paste von Whatsapp</h2>
+                <textarea onpaste="setTimeout(paste, 200);" style="height:100%; width: 100%;"
+                    id="input-text"></textarea>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; gap: 3em;">
+                <button style="font-size: 300%; font-weight bold;" onclick="clear()">❌</button>
+                <button style="font-size: 300%; font-weight bold;" onclick="update()">&rarr;</button>
+                <button style="font-size: 300%; font-weight bold;" onclick="copy()">⎘</button>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5em;">
+                <h2>Formular</h2>
+                <div></div>
+                <span class="label">ID</span><input type="text" id="igelID" />
+                <span class="label">1.a Verantwortlich</span><input type="text" id="1_a" />
+                <span class="label">1.b Wildtierart</span><input type="text" id="1_b" />
+                <span class="label">1.c Wildtiername</span><input type="text" id="1_c" />
+                <span class="label">2.a Funddatum</span><input type="text" id="2_a" />
+                <span class="label">2.b PLZ Fundort</span><input type="text" id="2_b" />
+                <span class="label">2.c Fundort</span><input type="text" id="2_c" />
+                <span class="label">2.d Straße Hausnummer Fundort</span><input type="text" id="2_d" />
+                <span class="label">2.e Alter: juvenil/adult</span><input type="text" id="2_e" />
+                <span class="label">2.f Geschlecht: m/w/u</span><input type="text" id="2_f" />
+                <span class="label">2.g Gewicht_gramm</span><input type="text" id="2_g" />
+                <span class="label">2.h Familie_ID</span><input type="text" id="2_h" />
+                <span class="label">2.i Fundumstände, z.B.Kellerschacht_Katzenopfer</span><input type="text" id="2_i" />
+                <span class="label">2.j Besondere Merkmale_Markierung</span><input type="text" id="2_j" />
+                <span class="label">3.a Pflegestelle</span><input type="text" id="3_a" />
+                <span class="label">3.b Pflegestelle_Startdatum</span><input type="text" id="3_b" />
+                <span class="label">3.c Pflegestelle_Startgewicht</span><input type="text" id="3_c" />
+                <span class="label">3.d Pflegestelle_Befunde</span><input type="text" id="3_d" />
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('input-text').value = "";
+
+        function paste() {
+            console.log("paste detected");
+            update();
+        }
+
+        function extractHeading(text) {
+            const regex = /(\d+).([a-z])/;
+            const match = text.match(regex);
+            if (match) {
+                return [match[1], match[2]];
+            }
+            return null;
+        }
+
+        let ids = [ "igelID", "1_a", "1_b", "1_c", "2_a", "2_b", "2_c", "2_d", "2_e", "2_f", "2_g", "2_h", "2_i", "2_j", "3_a", "3_b", "3_c", "3_d"];
+        function clear() {
+            document.getElementById('input-text').value = "";
+            for (let id of ids) {
+                document.getElementById(id).value = "";
+            }
+        }
+        clear();
+
+        function update() {
+            let text = document.getElementById('input-text').value;
+            text = text.replace(/\*/g, ""); //Remove bold formatting
+            document.getElementById('input-text').value = text;
+            //console.log("text", text)
+
+            let lines = text.split("\n").map(l => l.trim()).filter(l => l.length > 1);
+            //filter out seperators
+            lines = lines.filter(l => {
+                if (l.split('').every(c => c == "_" || c == "-")) {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+            console.log(lines);
+            let activeSection = null;
+            for (let line of lines) {
+                let line_as_number = parseInt(line);
+                if (!isNaN(line)) {
+                    document.getElementById('igelID').value = line_as_number;
+                } else {
+                    let heading = extractHeading(line);
+                    console.log(line, heading);
+                    if (heading !== null) {
+                        activeSection = heading[0] + "_" + heading[1];
+                        document.getElementById(activeSection).value = "";
+                    } else {
+                        if (activeSection !== null) {
+                            document.getElementById(activeSection).value += line.trim();
+                        } else {
+                            console.warn("Unmatched line: ", line);
+                        }
+                    }
+                }
+            }
+            copy();
+        }
+
+        function copy(){
+            let copied = ids.map(id => document.getElementById(id).value).join("\t") + "\n";
+            navigator.clipboard.writeText(copied);
+        }
+    </script>
+</body>
+
+</html>

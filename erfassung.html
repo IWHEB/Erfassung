@@ -103,8 +103,8 @@
                     if(line.startsWith("2025") || line.startsWith("2024")){
                         line = line.substring(4);
                         line_as_number = parseInt(line);
+                        document.getElementById('igelID').value = line_as_number;
                     }
-                    document.getElementById('igelID').value = line_as_number;
                 } else {
                     let heading = extractHeading(line);
                     console.log(line, heading);
@@ -155,9 +155,9 @@
                     if(line.startsWith("2025") || line.startsWith("2024")){
                         line = line.substring(4);
                         line_as_number = parseInt(line);
+                        document.getElementById('igelID').value = line_as_number;
+                        document.getElementById('phone').value = "N";
                     }
-                    document.getElementById('igelID').value = line_as_number;
-                    document.getElementById('phone').value = "N";
                 } else {
                     let heading = extractEmergencyHeading(line);
                     let heading_lookup = {

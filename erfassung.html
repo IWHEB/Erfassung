@@ -23,7 +23,7 @@
                     id="input-text"></textarea>
             </div>
             <div style="display: flex; flex-direction: column; justify-content: center; gap: 3em;">
-                <button style="font-size: 300%; font-weight bold;" onclick="clear()">❌</button>
+                <button style="font-size: 300%; font-weight bold;" onclick="clearInputs()">❌</button>
                 <button style="font-size: 300%; font-weight bold;" onclick="update()">&rarr;</button>
                 <button style="font-size: 300%; font-weight bold;" onclick="copy()">⎘</button>
             </div>
@@ -70,13 +70,13 @@
         }
 
         let ids = [ "igelID", "1_a", "phone", "1_b", "1_c", "2_a", "2_b", "2_c", "2_d", "2_e", "2_f", "2_g", "2_h", "2_i", "2_j", "3_a", "3_b", "3_c", "3_d"];
-        function clear() {
+        function clearInputs() {
             document.getElementById('input-text').value = "";
             for (let id of ids) {
                 document.getElementById(id).value = "";
             }
         }
-        clear();
+        clearInputs();
 
         function update() {
             let text = document.getElementById('input-text').value;

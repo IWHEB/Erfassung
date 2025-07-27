@@ -63,7 +63,7 @@
         }
 
         function extractHeading(text) {
-            const regex = /(\d+).([a-z])/;
+            const regex = /(\d+)\.([a-z])/;
             const match = regex.exec(text);
             if (match) {
                 return [match[1], match[2]];

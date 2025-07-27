@@ -23,9 +23,10 @@
                     id="input-text"></textarea>
             </div>
             <div style="display: flex; flex-direction: column; justify-content: center; gap: 3em;">
-                <button style="font-size: 300%; font-weight bold;" onclick="clearInputs()">❌</button>
-                <button style="font-size: 300%; font-weight bold;" onclick="update()">&rarr;</button>
-                <button style="font-size: 300%; font-weight bold;" onclick="copy()">⎘</button>
+                <button style="font-size: 300%; font-weight: bold;" onclick="clearInputs()">❌</button>
+                <button style="font-size: 300%; font-weight: bold;" onclick="update()">&rarr;</button>
+                <button style="font-size: 300%; font-weight: bold;" onclick="updateEmergency()">🚨</button>
+                <button style="font-size: 300%; font-weight: bold;" onclick="copy()">⎘</button>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5em;">
                 <h2>Formular</h2>
@@ -49,6 +50,7 @@
                 <span class="label">3.b Pflegestelle_Startdatum</span><input type="text" id="3_b" />
                 <span class="label">3.c Pflegestelle_Startgewicht</span><input type="text" id="3_c" />
                 <span class="label">3.d Pflegestelle_Befunde</span><input type="text" id="3_d" />
+                <span class="label">3.e Pflegestelle_Ergebnis</span><input type="text" id="3_e" />
             </div>
         </div>
     </div>
@@ -62,14 +64,14 @@
 
         function extractHeading(text) {
             const regex = /(\d+).([a-z])/;
-            const match = text.match(regex);
+            const match = regex.exec(text);
             if (match) {
                 return [match[1], match[2]];
             }
             return null;
         }
 
-        let ids = [ "igelID", "1_a", "phone", "1_b", "1_c", "2_a", "2_b", "2_c", "2_d", "2_e", "2_f", "2_g", "2_h", "2_i", "2_j", "3_a", "3_b", "3_c", "3_d"];
+        let ids = [ "igelID", "1_a", "phone", "1_b", "1_c", "2_a", "2_b", "2_c", "2_d", "2_e", "2_f", "2_g", "2_h", "2_i", "2_j", "3_a", "3_b", "3_c", "3_d", "3_e"];
         function clearInputs() {
             document.getElementById('input-text').value = "";
             for (let id of ids) {
@@ -112,6 +114,74 @@
                     } else {
                         if (activeSection !== null) {
                             document.getElementById(activeSection).value += line.trim();
+                        } else {
+                            console.warn("Unmatched line: ", line);
+                        }
+                    }
+                }
+            }
+            copy();
+        }
+
+        function extractEmergencyHeading(text) {
+            const regex = /(\d+)\.\D/;
+            const match = regex.exec(text);
+            if (match) {
+                return match[1];
+            }
+            return null;
+        }
+
+        function updateEmergency() {
+            let text = document.getElementById('input-text').value;
+            text = text.replace(/\*/g, ""); //Remove bold formatting
+            document.getElementById('input-text').value = text;
+            //console.log("text", text)
+
+            let lines = text.split("\n").map(l => l.trim()).filter(l => l.length >= 1);
+            //filter out seperators
+            lines = lines.filter(l => {
+                if (l.split('').every(c => c == "_" || c == "-")) {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+            console.log(lines);
+            let activeSection = null;
+            for (let line of lines) {
+                let line_as_number = parseInt(line);
+                if (!isNaN(line) && activeSection === null) {
+                    if(line.startsWith("2025") || line.startsWith("2024")){
+                        line = line.substring(4);
+                        line_as_number = parseInt(line);
+                    }
+                    document.getElementById('igelID').value = line_as_number;
+                    document.getElementById('phone').value = "N";
+                } else {
+                    let heading = extractEmergencyHeading(line);
+                    let heading_lookup = {
+                        "1": "2_a",
+                        "2": "2_b",
+                        "3": "2_d",
+                        "5": "1_b",
+                        "6": "2_e",
+                        "7": "2_g",
+                        "8": "2_i",
+                        "10": "2_j"
+                    };
+                    console.log(line, heading, heading_lookup[heading]);
+                    if (heading !== null) {
+                        if(heading_lookup.hasOwnProperty(heading)){
+                            activeSection = heading_lookup[heading + ""];
+                            console.log("Entered section ", activeSection);
+                            document.getElementById(activeSection).value = "";
+                        }else{
+                            activeSection = null;
+                        }
+                    } else {
+                        if (activeSection !== null) {
+                            document.getElementById(activeSection).value += " " + line.trim();
                         } else {
                             console.warn("Unmatched line: ", line);
                         }

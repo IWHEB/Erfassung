@@ -188,6 +188,10 @@
                     }
                 }
             }
+            //Parse PLZ and fundort differently
+            let plz_fundort = (document.getElementById('2_b').value + "").trim().split(" ");
+            document.getElementById('2_b').value = plz_fundort[0];
+            document.getElementById('2_c').value = plz_fundort[1];
             copy();
         }
 

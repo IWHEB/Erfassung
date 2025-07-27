@@ -181,7 +181,10 @@
                         }
                     } else {
                         if (activeSection !== null) {
-                            document.getElementById(activeSection).value += " " + line.trim();
+                            if(document.getElementById(activeSection).value.length > 0){
+                                document.getElementById(activeSection).value += " ";
+                            }
+                            document.getElementById(activeSection).value += line.trim();
                         } else {
                             console.warn("Unmatched line: ", line);
                         }

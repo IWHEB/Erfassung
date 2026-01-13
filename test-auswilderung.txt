@@ -1,0 +1,38 @@
+1)AUSWILDERUNG
+
+*Nummer:*
+2)2026999
+*Name:*
+3)Püppi
+*Datum:*
+4)30.01.2026
+*PLZ:*
+5)24340
+*Ort:*
+6)Eckernförde
+*Straße & Hausnummer:*
+7)Rathausmarkt 2
+*Besondere Ortsbeschreibung:*
+8)
+*Gewicht:*
+13) 410
+*Markierung:*
+22) roter Ring rechts mit Nummer 47
+____________________
+
+*Todesursache:*
+35)
+____________________
+
+*Wiederfund-Zustand:*
+21)
+*Wiederfund-Auswilderung-Datum:*
+36)
+*Wiederfund-Auswilderung-PLZ:*
+37)
+*Wiederfund-Auswilderung-Ort:*
+38)
+*Wiederfund-Auswilderung-Straße & Hausnummer:*
+39)
+*Wiederfund-Auswilderung-Gewicht:*
+40)

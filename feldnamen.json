@@ -1,0 +1,61 @@
+{
+    "names": [
+        "Eingabeart",
+        "Nummer",
+        "Name",
+        "Startdatum",
+        "Fund_PLZ",
+        "Fund_Ort",
+        "Fund_StrHausnr",
+        "Fund_spezOrt",
+        "FinderInnen_Kontakt",
+        "Wildtierart_fein",
+        "Wildtierart_grob",
+        "juv_adult",
+        "Gewicht_in_gr",
+        "Fundumstände",
+        "Ergebnis",
+        "Bestandsbuch/ext",
+        "Geschlecht",
+        "Wiederfund_alteNummer",
+        "Überwinterung",
+        "Auswilderung",
+        "Befund",
+        "Markierung",
+        "Anzahl_fehlende_Pfoten",
+        "Schnittverletzung",
+        "Eingeschnürt",
+        "Eingesperrt",
+        "Kollision",
+        "Haustieropfer",
+        "Besonderes",
+        "Husten_Schnupfen_Rasseln",
+        "Abszess_0/1/mehr",
+        "Fliegeneiner/Maden",
+        ">100 Zecken/Nymphen",
+        "Pilz/Milben",
+        "Todesursache",
+        "Ausw_Datum",
+        "Ausw_PLZ",
+        "Ausw_Ort",
+        "Ausw_StrHausnr",
+        "Ausw_Gewicht"
+    ],
+    "active":{
+        "neueingabe": [
+            0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33
+        ],
+        "bestandsbuchwechsel": [
+            0,1,2,3,12,20
+        ],
+        "auswilderung":[
+            0,1,2,3,4,5,6,12,21
+        ],
+        "wiederfund":[
+            0,1,2,3,4,5,6,12,20,21,35,36,37,38,39
+        ],
+        "gestorben": [
+            0,1,2,3,12,34
+        ]
+    }
+}

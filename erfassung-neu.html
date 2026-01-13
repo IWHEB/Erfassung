@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        .label {
+            margin-right: 1em;
+        }
+        h2{
+            margin: 0.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: flex; flex-direction: column;">
+        <div style="display: flex; flex-direction: row; justify-content: space-evenly; gap: 3em;">
+            <div style="display: flex; flex-direction: column;">
+                <h2>Copy-Paste von Whatsapp</h2>
+                <textarea style="height:100%; width: 100%;"
+                    id="input-text"></textarea>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; gap: 3em;">
+                <button style="font-size: 300%; font-weight: bold;" onclick="clear()">❌</button>
+                <button style="font-size: 300%; font-weight: bold;" onclick="update()">&rarr;</button>
+                <button style="font-size: 300%; font-weight: bold;" onclick="copy()">⎘</button>
+            </div>
+            <div id="formular" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.25em;">
+                <h2>Formular</h2>
+                <div style="display: flex; flex-direction: row; align-items: center;"><label for="showUsedOnly">Nur Benötigte anzeigen</label><input id="showUsedOnly" type="checkbox" checked /></div>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        let feldnamen = await fetch("feldnamen.json").then(r => r.json());
+        console.log(feldnamen);
+
+        let make_name_safe = (name) => name.replace(/[^a-z0-9]/gi, '_');
+
+        let formelement = document.getElementById('formular');
+
+        let ids = [];
+
+        for(let name of feldnamen.names){
+            let id = make_name_safe(name);
+            let namespan = document.createElement('span');
+            namespan.innerText = name;
+            namespan.classList.add("label");
+            namespan.setAttribute("id", "label-" + id);
+            formelement.appendChild(namespan);
+            let inputelem = document.createElement('input');
+            inputelem.setAttribute("type", "text");
+            inputelem.setAttribute("id", "input-" + id);
+            ids.push("input-" + id);
+            formelement.appendChild(inputelem);
+        }
+
+        document.getElementById('input-text').value = "";
+
+
+        function paste() {
+            console.log("paste detected");
+            update();
+        }
+        document.getElementById('input-text').onpaste = () => setTimeout(paste, 200);
+
+        function extractHeading(text) {
+            const regex = /(\d+).([a-z])/;
+            const match = text.match(regex);
+            if (match) {
+                return [match[1], match[2]];
+            }
+            return null;
+        }
+
+        function clear() {
+            document.getElementById('input-text').value = "";
+            for (let id of ids) {
+                document.getElementById(id).value = "";
+            }
+        }
+        clear();
+
+        function update() {
+            let text = document.getElementById('input-text').value;
+            let lines = text.split("\n").map(l => l.trim()).filter(l => l.length >= 1);
+            //filter out seperators
+            lines = lines.filter(l => {
+                if (l.split('').every(c => c == "_" || c == "-")) {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+            console.log(lines);
+
+            const entry_regex = /^(\d+)\)/;
+            let accumulator = "";
+            let activeEntry = null;
+            for(let line of lines){
+                let is_description_line = line.startsWith("*") && line.endsWith("*");
+                let entry_match = line.match(entry_regex);
+                let is_entry_line = !!entry_match; //cast to boolean
+                let entry_number = entry_match ? Number(entry_match[1]) : null;
+                if(activeEntry === null && is_entry_line){
+                    accumulator += line.replace(entry_regex, "");
+                    activeEntry = entry_number - 1;
+                    console.log("Found entry for field index", activeEntry + 1, feldnamen.names[activeEntry])
+                }else if(is_description_line && activeEntry !== null){
+                    let activeName = feldnamen.names[activeEntry];
+                    console.log("Finalizing entry for", activeName);
+                    document.getElementById("input-"+make_name_safe(activeName)).value = accumulator.replace("\n", " ").trim();
+                    activeEntry = null;
+                    accumulator = "";
+                }else if(!is_description_line){
+                    accumulator += line;
+                }
+            }
+
+            if(activeEntry != null){
+                let activeName = feldnamen.names[activeEntry];
+                console.log("Finalizing entry for", activeName);
+                document.getElementById("input-"+make_name_safe(activeName)).value = accumulator.replace("\n", " ").trim();
+            }
+            
+            updateShownFields();
+            copy();
+        }
+
+        function updateShownFields(){
+            let eingabeart = document.getElementById("input-Eingabeart").value || "";
+            eingabeart = eingabeart.toLowerCase();
+            let checked = document.getElementById("showUsedOnly").checked;
+            if (checked && Object.hasOwn(feldnamen.active, eingabeart)){
+                let activeFields = feldnamen.active[eingabeart].map(i => feldnamen.names[i]);
+                for(let name of feldnamen.names){
+                    document.getElementById('label-' + make_name_safe(name)).style.display = "none";
+                    document.getElementById('input-' + make_name_safe(name)).style.display = "none";
+                }
+                for(let name of activeFields){
+                    document.getElementById('label-' + make_name_safe(name)).style.display = "block";
+                    document.getElementById('input-' + make_name_safe(name)).style.display = "block";
+                }
+            }else{
+                for(let name of feldnamen.names){
+                    document.getElementById('label-' + make_name_safe(name)).style.display = "block";
+                    document.getElementById('input-' + make_name_safe(name)).style.display = "block";
+                }
+            }
+        }
+        document.getElementById("showUsedOnly").onchange = updateShownFields;
+
+        function copy(){
+            let copied = ids.map(id => document.getElementById(id).value).join("\t") + "\n";
+            navigator.clipboard.writeText(copied);
+        }
+    </script>
+</body>
+
+</html>

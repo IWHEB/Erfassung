@@ -26,9 +26,9 @@
                     id="input-text"></textarea>
             </div>
             <div style="display: flex; flex-direction: column; justify-content: center; gap: 3em;">
-                <button style="font-size: 300%; font-weight: bold;" onclick="clear()">❌</button>
-                <button style="font-size: 300%; font-weight: bold;" onclick="update()">&rarr;</button>
-                <button style="font-size: 300%; font-weight: bold;" onclick="copy()">⎘</button>
+                <button style="font-size: 300%; font-weight: bold;" id="btnClear">❌</button>
+                <button style="font-size: 300%; font-weight: bold;" id="btnUpdate">&rarr;</button>
+                <button style="font-size: 300%; font-weight: bold;" id="btnCopy">⎘</button>
             </div>
             <div id="formular" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.25em;">
                 <h2>Formular</h2>
@@ -127,7 +127,7 @@
                 console.log("Finalizing entry for", activeName);
                 document.getElementById("input-"+make_name_safe(activeName)).value = accumulator.replace("\n", " ").trim();
             }
-            
+
             updateShownFields();
             copy();
         }
@@ -159,6 +159,10 @@
             let copied = ids.map(id => document.getElementById(id).value).join("\t") + "\n";
             navigator.clipboard.writeText(copied);
         }
+
+        document.getElementById('btnCopy').onclick = copy;
+        document.getElementById('btnUpdate').onclick = update;
+        document.getElementById('btnClear').onclick = clear;
     </script>
 </body>
 

@@ -117,8 +117,11 @@
                     console.log("Finalizing entry for", activeName);
                     if(activeName == "Gewicht_in_gr"){
                         if(accumulator.endsWith("g")){
+                            console.log("Removing extra g on weight");
                             accumulator = accumulator.substring(0,accumulator.length-1);
                         }
+                    }else if(activeName == "juv_adult"){
+                        
                     }
                     document.getElementById("input-"+make_name_safe(activeName)).value = accumulator.replace("\n", " ").trim();
                     activeEntry = null;

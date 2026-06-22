@@ -46,10 +46,11 @@
 
         let ids = [];
 
+        let ctr = 1;
         for(let name of feldnamen.names){
             let id = make_name_safe(name);
             let namespan = document.createElement('span');
-            namespan.innerText = name;
+            namespan.innerText = `${ctr}) ${name}`;
             namespan.classList.add("label");
             namespan.setAttribute("id", "label-" + id);
             formelement.appendChild(namespan);
@@ -58,6 +59,7 @@
             inputelem.setAttribute("id", "input-" + id);
             ids.push("input-" + id);
             formelement.appendChild(inputelem);
+            ctr += 1;
         }
 
         document.getElementById('input-text').value = "";

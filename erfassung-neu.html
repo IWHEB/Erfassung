@@ -107,11 +107,9 @@
                 let entry_match = line.match(entry_regex);
                 let is_entry_line = !!entry_match; //cast to boolean
                 let entry_number = entry_match ? Number(entry_match[1]) : null;
-                if(activeEntry === null && is_entry_line){
-                    accumulator += line.replace(entry_regex, "");
-                    activeEntry = entry_number - 1;
-                    console.log("Found entry for field index", activeEntry + 1, feldnamen.names[activeEntry])
-                }else if(is_description_line && activeEntry !== null){
+                // Conditions for entry finalization: new line with description or new line with different entry number
+                // AND we actually have an entry
+                if(activeEntry != null && (is_description_line || (is_entry_line && (entry_number -1 != activeEntry)))){
                     let activeName = feldnamen.names[activeEntry];
                     accumulator = accumulator.trim();
                     console.log("Finalizing entry for", activeName);
@@ -126,6 +124,12 @@
                     document.getElementById("input-"+make_name_safe(activeName)).value = accumulator.replace("\n", " ").trim();
                     activeEntry = null;
                     accumulator = "";
+                }
+                // Even if we just finished a line, we have to parse the next one
+                if(activeEntry === null && is_entry_line){
+                    accumulator += line.replace(entry_regex, "");
+                    activeEntry = entry_number - 1;
+                    console.log("Found entry for field index", activeEntry + 1, feldnamen.names[activeEntry]) 
                 }else if(!is_description_line){
                     accumulator += line;
                 }
